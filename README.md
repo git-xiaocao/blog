@@ -11,4 +11,5 @@
 + Iris
 + GORM
 + MySQL
++ Redis
 

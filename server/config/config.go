@@ -7,6 +7,7 @@ import (
 
 type config struct {
 	Database database
+	Redis    redis
 }
 
 type database struct {
@@ -14,7 +15,14 @@ type database struct {
 	Password string `yaml:"password"`
 	Host     string `yaml:"host"`
 	Port     int16  `yaml:"port"`
-	DBName   string `yaml:"db_name"`
+	DBName   string `yaml:"db-name"`
+}
+
+type redis struct {
+	Host     string `yaml:"host"`
+	Port     int16  `yaml:"port"`
+	Password string `yaml:"password"`
+	DB       int    `yaml:"db"`
 }
 
 //go:embed config.yaml
