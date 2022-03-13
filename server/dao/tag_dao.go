@@ -21,6 +21,11 @@ func (*TagDAO) Add(tag model.Tag) (err error) {
 	return
 }
 
+func (*TagDAO) DeleteById(id int64) (err error) {
+	err = db.Delete(&model.Tag{}).Where("id = ?", id).Error
+	return
+}
+
 func NewTagDAO() *TagDAO {
 	return &TagDAO{}
 }
