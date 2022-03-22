@@ -99,7 +99,7 @@ func (a *ArticleService) Exist(pathMark string) (result bool) {
 }
 
 func (a *ArticleService) List(tagIds []int64, offset, limit int) (result []*model.Article, err error) {
-	if tagIds == nil {
+	if len(tagIds) == 0 {
 		result, err = a.dao.QueryList(offset, limit)
 	} else {
 		result, err = a.dao.QueryListByTagIds(tagIds, offset, limit)

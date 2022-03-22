@@ -10,7 +10,7 @@ type ArticleDAO struct{}
 func (*ArticleDAO) QueryList(offset, limit int) (result []*model.Article, err error) {
 
 	err = db.Model(&model.Article{}).
-		Preload("CategoryDAO").Preload("Tags").
+		Preload("Category").Preload("Tags").
 		Offset(offset).Limit(limit).
 		Find(&result).Error
 
@@ -42,7 +42,7 @@ func (*ArticleDAO) QueryListByTagIds(tagIds []int64, offset, limit int) (result 
 		}
 		//再用文章id去查文章
 		err = tx.Model(&model.Article{}).
-			Preload("CategoryDAO").Preload("Tags").
+			Preload("Category").Preload("Tags").
 			Where("id IN ?", articleIds).
 			Offset(offset).Limit(limit).
 			Find(&result).Error

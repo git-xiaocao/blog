@@ -4,17 +4,26 @@ import (
 	"github.com/kataras/iris/v12"
 	"server/model"
 	"server/service"
+	"server/vo"
 )
 
 type TagController struct {
 	service *service.TagService
 }
 
-func (t *TagController) GetAll() (result []*model.Tag, code int) {
-	result, err := t.service.QueryAll()
+func (t *TagController) GetAll() (result vo.Result[[]*model.Tag]) {
+	data, err := t.service.QueryAll()
 	if err != nil {
-		code = iris.StatusInternalServerError
+		result.DBError(err)
+		return
 	}
+	result.DataOk(data)
+
+	return
+}
+
+func (t *TagController) PostAdd(ctx iris.Context) (result vo.Result[any]) {
+
 	return
 }
 

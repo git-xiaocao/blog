@@ -3,8 +3,8 @@ package backstage
 import (
 	"github.com/kataras/iris/v12"
 	"server/dto"
+	"server/model"
 	"server/service"
-	"server/util"
 	"server/vo"
 )
 
@@ -13,20 +13,13 @@ type ArticleController struct {
 }
 
 //GetBy /article/{pathMark}
-func (a *ArticleController) GetBy(pathMark string) (result *vo.Result, code int) {
+func (a *ArticleController) GetBy(pathMark string) (result vo.Result[model.Article], code int) {
 	if a.service.Exist(pathMark) {
 		data, err := a.service.Get(pathMark)
 		if err != nil {
-			result = &vo.Result{
-				Error:   true,
-				Message: err.Error(),
-			}
-
+			result.ReadJsonError(err)
 		} else {
-			result = &vo.Result{
-				Data: data,
-			}
-
+			result.DataOk(data)
 		}
 	} else {
 		code = iris.StatusNotFound
@@ -35,55 +28,68 @@ func (a *ArticleController) GetBy(pathMark string) (result *vo.Result, code int)
 }
 
 //PostAdd /article/add
-func (a *ArticleController) PostAdd(ctx iris.Context) (result *vo.Result, err error) {
+func (a *ArticleController) PostAdd(ctx iris.Context) (result vo.Result[any]) {
 	var body dto.ArticleAddDTO
-	err = ctx.ReadJSON(&body)
+	err := ctx.ReadJSON(&body)
 
 	if err != nil {
+		result.ReadJsonError(err)
 		return
 	}
 
-	if e := a.service.Add(body); e != nil {
-		result = &vo.Result{
-			Error: true,
-			Data:  e.Error(),
-		}
+	if err = a.service.Add(body); err != nil {
+		result.Ok()
 	} else {
-		result = &vo.Result{}
+		result.DBError(err)
 	}
 
 	return
 }
 
 //PostUpdate /article/update
-func (a *ArticleController) PostUpdate(ctx iris.Context) (result *vo.Result, err error) {
+func (a *ArticleController) PostUpdate(ctx iris.Context) (result vo.Result[any]) {
 	var body dto.ArticleUpdateDTO
-	err = ctx.ReadJSON(&body)
+	err := ctx.ReadJSON(&body)
 
 	if err != nil {
+		result.ReadJsonError(err)
 		return
 	}
-	if e := a.service.Update(body); e != nil {
-		result = &vo.Result{
-			Error:   true,
-			Message: e.Error(),
-		}
+	if err = a.service.Update(body); err != nil {
+		result.DBError(err)
 	} else {
-		result = &vo.Result{}
+		result.Ok()
 	}
 
 	return
 }
 
 //GetList /article/list
-func (a *ArticleController) GetList(ctx iris.Context) (result *vo.Result, err error) {
-
-	tagIds, err := util.QueryParamsArray[int64]("tag-ids", ctx.URLParams())
+func (a *ArticleController) GetList(ctx iris.Context) (result vo.Result[[]*model.Article]) {
+	var query struct {
+		TagIds []int64 `url:"tag-ids"`
+		Offset *int    `url:"offset"`
+		Limit  *int    `url:"limit"`
+	}
+	err := ctx.ReadQuery(&query)
 	if err != nil {
+		result.ReadQueryError(err)
 		return
 	}
 
-	result = &vo.Result{Data: tagIds}
+	if query.Offset == nil {
+		result.QueryParamLack("offset")
+		return
+	}
+
+	if query.Limit == nil {
+		result.QueryParamLack("limit")
+		return
+	}
+
+	data, err := a.service.List(query.TagIds, *query.Offset, *query.Limit)
+
+	result.DataOk(data)
 	return
 }
 
