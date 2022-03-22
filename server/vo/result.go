@@ -1,6 +1,6 @@
-package dto
+package vo
 
-type ResultDTO struct {
+type Result struct {
 	Error   bool        `json:"error"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`

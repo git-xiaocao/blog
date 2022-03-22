@@ -5,6 +5,7 @@ import (
 	"server/dto"
 	"server/service"
 	"server/util"
+	"server/vo"
 )
 
 type ArticleController struct {
@@ -12,17 +13,17 @@ type ArticleController struct {
 }
 
 //GetBy /article/{pathMark}
-func (a *ArticleController) GetBy(pathMark string) (result *dto.ResultDTO, code int) {
+func (a *ArticleController) GetBy(pathMark string) (result *vo.Result, code int) {
 	if a.service.Exist(pathMark) {
 		data, err := a.service.Get(pathMark)
 		if err != nil {
-			result = &dto.ResultDTO{
+			result = &vo.Result{
 				Error:   true,
 				Message: err.Error(),
 			}
 
 		} else {
-			result = &dto.ResultDTO{
+			result = &vo.Result{
 				Data: data,
 			}
 
@@ -34,7 +35,7 @@ func (a *ArticleController) GetBy(pathMark string) (result *dto.ResultDTO, code 
 }
 
 //PostAdd /article/add
-func (a *ArticleController) PostAdd(ctx iris.Context) (result *dto.ResultDTO, err error) {
+func (a *ArticleController) PostAdd(ctx iris.Context) (result *vo.Result, err error) {
 	var body dto.ArticleAddDTO
 	err = ctx.ReadJSON(&body)
 
@@ -43,19 +44,19 @@ func (a *ArticleController) PostAdd(ctx iris.Context) (result *dto.ResultDTO, er
 	}
 
 	if e := a.service.Add(body); e != nil {
-		result = &dto.ResultDTO{
+		result = &vo.Result{
 			Error: true,
 			Data:  e.Error(),
 		}
 	} else {
-		result = &dto.ResultDTO{}
+		result = &vo.Result{}
 	}
 
 	return
 }
 
 //PostUpdate /article/update
-func (a *ArticleController) PostUpdate(ctx iris.Context) (result *dto.ResultDTO, err error) {
+func (a *ArticleController) PostUpdate(ctx iris.Context) (result *vo.Result, err error) {
 	var body dto.ArticleUpdateDTO
 	err = ctx.ReadJSON(&body)
 
@@ -63,26 +64,26 @@ func (a *ArticleController) PostUpdate(ctx iris.Context) (result *dto.ResultDTO,
 		return
 	}
 	if e := a.service.Update(body); e != nil {
-		result = &dto.ResultDTO{
+		result = &vo.Result{
 			Error:   true,
 			Message: e.Error(),
 		}
 	} else {
-		result = &dto.ResultDTO{}
+		result = &vo.Result{}
 	}
 
 	return
 }
 
 //GetList /article/list
-func (a *ArticleController) GetList(ctx iris.Context) (result *dto.ResultDTO, err error) {
+func (a *ArticleController) GetList(ctx iris.Context) (result *vo.Result, err error) {
 
-	tagIds, err := util.QueryParamsInt64Array("tag-ids", ctx.URLParams())
+	tagIds, err := util.QueryParamsArray[int64]("tag-ids", ctx.URLParams())
 	if err != nil {
 		return
 	}
 
-	result = &dto.ResultDTO{Data: tagIds}
+	result = &vo.Result{Data: tagIds}
 	return
 }
 
