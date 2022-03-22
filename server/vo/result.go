@@ -15,6 +15,11 @@ func (r *Result[T]) Err(err error, message string) {
 	r.Message = message
 }
 
+func (r *Result[T]) NotFound() {
+	r.HasError = true
+	r.Message = "找不到"
+}
+
 func (r *Result[T]) DataOk(data T) {
 	r.Data = data
 }

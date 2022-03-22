@@ -13,59 +13,24 @@ type ArticleController struct {
 }
 
 //GetBy /article/{pathMark}
-func (a *ArticleController) GetBy(pathMark string) (result vo.Result[model.Article], code int) {
-	if a.service.Exist(pathMark) {
-		data, err := a.service.Get(pathMark)
-		if err != nil {
-			result.ReadJsonError(err)
-		} else {
-			result.DataOk(data)
-		}
-	} else {
+func (a *ArticleController) GetBy(pathMark string) (result vo.Result[*model.Article], code int) {
+	if !a.service.Exist(pathMark) {
+		result.NotFound()
 		code = iris.StatusNotFound
+		return
 	}
-	return
-}
-
-//PostAdd /article/add
-func (a *ArticleController) PostAdd(ctx iris.Context) (result vo.Result[any]) {
-	var body dto.ArticleAddDTO
-	err := ctx.ReadJSON(&body)
-
+	data, err := a.service.Get(pathMark)
 	if err != nil {
-		result.ReadJsonError(err)
+		result.DBError(err)
 		return
 	}
 
-	if err = a.service.Add(body); err != nil {
-		result.Ok()
-	} else {
-		result.DBError(err)
-	}
-
-	return
-}
-
-//PostUpdate /article/update
-func (a *ArticleController) PostUpdate(ctx iris.Context) (result vo.Result[any]) {
-	var body dto.ArticleUpdateDTO
-	err := ctx.ReadJSON(&body)
-
-	if err != nil {
-		result.ReadJsonError(err)
-		return
-	}
-	if err = a.service.Update(body); err != nil {
-		result.DBError(err)
-	} else {
-		result.Ok()
-	}
-
+	result.DataOk(&data)
 	return
 }
 
 //GetList /article/list
-func (a *ArticleController) GetList(ctx iris.Context) (result vo.Result[[]*model.Article]) {
+func (a *ArticleController) GetList(ctx iris.Context) (result vo.Result[*[]*model.Article]) {
 	var query struct {
 		TagIds []int64 `url:"tag-ids"`
 		Offset *int    `url:"offset"`
@@ -89,7 +54,44 @@ func (a *ArticleController) GetList(ctx iris.Context) (result vo.Result[[]*model
 
 	data, err := a.service.List(query.TagIds, *query.Offset, *query.Limit)
 
-	result.DataOk(data)
+	result.DataOk(&data)
+	return
+}
+
+//PostAdd /article/add
+func (a *ArticleController) PostAdd(ctx iris.Context) (result vo.Result[*any]) {
+	var body dto.ArticleAddDTO
+	err := ctx.ReadJSON(&body)
+
+	if err != nil {
+		result.ReadJsonError(err)
+		return
+	}
+
+	if err = a.service.Add(body); err != nil {
+		result.Ok()
+	} else {
+		result.DBError(err)
+	}
+
+	return
+}
+
+//PostUpdate /article/update
+func (a *ArticleController) PostUpdate(ctx iris.Context) (result vo.Result[*any]) {
+	var body dto.ArticleUpdateDTO
+	err := ctx.ReadJSON(&body)
+
+	if err != nil {
+		result.ReadJsonError(err)
+		return
+	}
+	if err = a.service.Update(body); err != nil {
+		result.DBError(err)
+	} else {
+		result.Ok()
+	}
+
 	return
 }
 

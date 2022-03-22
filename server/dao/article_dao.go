@@ -20,14 +20,14 @@ func (*ArticleDAO) QueryList(offset, limit int) (result []*model.Article, err er
 func (*ArticleDAO) QueryById(id int64) (result model.Article, err error) {
 	err = db.Model(&model.Article{}).
 		Where("id = ?", id).
-		Preload("CategoryDAO").Preload("Tags").Last(&result).Error
+		Preload("Category").Preload("Tags").Last(&result).Error
 	return
 }
 
 func (*ArticleDAO) QueryByPathMark(pathMark string) (result model.Article, err error) {
 	err = db.Model(&model.Article{}).
 		Where("path_mark = ?", pathMark).
-		Preload("CategoryDAO").Preload("Tags").Last(&result).Error
+		Preload("Category").Preload("Tags").Last(&result).Error
 	return
 }
 
@@ -69,7 +69,7 @@ func (*ArticleDAO) Update(article model.Article) (err error) {
 }
 
 func (*ArticleDAO) ExistByPathMark(pathMark string) (result bool) {
-	db.Raw("SELECT TRUE FROM article WHERE name = ?", pathMark).Scan(&result)
+	db.Raw("SELECT TRUE FROM article WHERE path_mark = ?", pathMark).Scan(&result)
 	return
 }
 
