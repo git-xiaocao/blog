@@ -3,7 +3,6 @@ package backstage
 import (
 	"github.com/kataras/iris/v12"
 	"server/dto"
-	"server/model"
 	"server/service"
 	"server/vo"
 )
@@ -13,7 +12,7 @@ type ArticleController struct {
 }
 
 //GetBy /article/{pathMark}
-func (a *ArticleController) GetBy(pathMark string) (result vo.Result[*model.Article], code int) {
+func (a *ArticleController) GetBy(pathMark string) (result vo.ArticleResult, code int) {
 	if !a.service.Exist(pathMark) {
 		result.NotFound()
 		code = iris.StatusNotFound
@@ -30,11 +29,11 @@ func (a *ArticleController) GetBy(pathMark string) (result vo.Result[*model.Arti
 }
 
 //GetList /article/list
-func (a *ArticleController) GetList(ctx iris.Context) (result vo.Result[*[]*model.Article]) {
+func (a *ArticleController) GetList(ctx iris.Context) (result vo.ArticleListResult) {
 	var query struct {
-		TagIds []int64 `url:"tag-ids"`
 		Offset *int    `url:"offset"`
 		Limit  *int    `url:"limit"`
+		TagIds []int64 `url:"tag-ids"`
 	}
 	err := ctx.ReadQuery(&query)
 	if err != nil {
@@ -52,6 +51,12 @@ func (a *ArticleController) GetList(ctx iris.Context) (result vo.Result[*[]*mode
 		return
 	}
 
+	//大于0小于30
+	if !(*query.Limit > 0 && *query.Limit < 30) {
+		result.Err(nil, "参数范围 0 < limit > 30")
+		return
+	}
+
 	data, err := a.service.List(query.TagIds, *query.Offset, *query.Limit)
 
 	result.DataOk(&data)
@@ -59,7 +64,7 @@ func (a *ArticleController) GetList(ctx iris.Context) (result vo.Result[*[]*mode
 }
 
 //PostAdd /article/add
-func (a *ArticleController) PostAdd(ctx iris.Context) (result vo.Result[*any]) {
+func (a *ArticleController) PostAdd(ctx iris.Context) (result vo.EmptyResult) {
 	var body dto.ArticleAddDTO
 	err := ctx.ReadJSON(&body)
 
@@ -78,7 +83,7 @@ func (a *ArticleController) PostAdd(ctx iris.Context) (result vo.Result[*any]) {
 }
 
 //PostUpdate /article/update
-func (a *ArticleController) PostUpdate(ctx iris.Context) (result vo.Result[*any]) {
+func (a *ArticleController) PostUpdate(ctx iris.Context) (result vo.EmptyResult) {
 	var body dto.ArticleUpdateDTO
 	err := ctx.ReadJSON(&body)
 

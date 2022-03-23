@@ -3,7 +3,6 @@ package backstage
 import (
 	"github.com/kataras/iris/v12"
 	"server/dto"
-	"server/model"
 	"server/service"
 	"server/vo"
 )
@@ -12,7 +11,7 @@ type TagController struct {
 	service *service.TagService
 }
 
-func (t *TagController) PostAdd(ctx iris.Context) (result vo.Result[*any]) {
+func (t *TagController) PostAdd(ctx iris.Context) (result vo.EmptyResult) {
 	var body dto.TagAddDTO
 	err := ctx.ReadJSON(&body)
 	if err != nil {
@@ -29,8 +28,8 @@ func (t *TagController) PostAdd(ctx iris.Context) (result vo.Result[*any]) {
 	return
 }
 
-func (t *TagController) GetAll() (result vo.Result[*[]*model.Tag]) {
-	data, err := t.service.QueryAll()
+func (t *TagController) GetList() (result vo.TagListResult) {
+	data, err := t.service.List()
 	if err != nil {
 		result.DBError(err)
 		return

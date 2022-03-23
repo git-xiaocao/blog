@@ -21,7 +21,7 @@ func (t *TagService) Delete(dto dto.TagDeleteDTO) (err error) {
 	return
 }
 
-func (t *TagService) QueryAll() (result []*model.Tag, err error) {
+func (t *TagService) List() (result []*model.Tag, err error) {
 	result, err = t.dao.QueryAll()
 	return
 }
