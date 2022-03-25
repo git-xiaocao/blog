@@ -16,7 +16,7 @@ func main() {
 
 	InitBackstageMVC(baseParty.Party("/backstage"))
 
-	InitCommonMVC(baseParty.Party("/common"))
+	InitFrontMVC(baseParty.Party("/front"))
 
 	err := app.Run(iris.Addr(":44444"))
 
@@ -43,19 +43,19 @@ func InitBackstageMVC(party iris.Party) {
 	})
 }
 
-// InitCommonMVC 初始化公共MVC
-func InitCommonMVC(party iris.Party) {
+// InitFrontMVC 初始化前台MVC
+func InitFrontMVC(party iris.Party) {
 	party.Use(middleware.Token)
 	mvc.Configure(party.Party("/article"), func(app *mvc.Application) {
-		app.Handle(inject.InitCommonArticleController())
+		app.Handle(inject.InitFrontArticleController())
 	})
 	mvc.Configure(party.Party("/category"), func(app *mvc.Application) {
-		app.Handle(inject.InitCommonCategoryController())
+		app.Handle(inject.InitFrontCategoryController())
 	})
 	mvc.Configure(party.Party("/tag"), func(app *mvc.Application) {
-		app.Handle(inject.InitCommonTagController())
+		app.Handle(inject.InitFrontTagController())
 	})
 	mvc.Configure(party.Party("/user"), func(app *mvc.Application) {
-		app.Handle(inject.InitBackstageTagController())
+		app.Handle(inject.InitFrontTagController())
 	})
 }

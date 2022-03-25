@@ -1,4 +1,4 @@
-package common
+package front
 
 import (
 	"github.com/kataras/iris/v12"
@@ -10,8 +10,8 @@ type TagController struct {
 	service *service.TagService
 }
 
-func (t *TagController) GetAll() (result []*model.Tag, code int) {
-	result, err := t.service.QueryAll()
+func (t *TagController) GetList() (result []*model.Tag, code int) {
+	result, err := t.service.List()
 	if err != nil {
 		code = iris.StatusInternalServerError
 	}

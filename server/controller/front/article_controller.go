@@ -1,4 +1,4 @@
-package common
+package front
 
 import (
 	"server/service"

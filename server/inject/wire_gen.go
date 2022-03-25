@@ -8,7 +8,7 @@ package inject
 
 import (
 	"server/controller/backstage"
-	"server/controller/common"
+	"server/controller/front"
 	"server/dao"
 	"server/service"
 )
@@ -47,34 +47,34 @@ func InitBackstageUserController() *backstage.UserController {
 	return userController
 }
 
-//InitCommonArticleController 初始化公共的文章控制器
-func InitCommonArticleController() *common.ArticleController {
+//InitFrontArticleController 初始化前台的文章控制器
+func InitFrontArticleController() *front.ArticleController {
 	articleDAO := dao.NewArticleDAO()
 	articleService := service.NewArticleService(articleDAO)
-	articleController := common.NewArticleController(articleService)
+	articleController := front.NewArticleController(articleService)
 	return articleController
 }
 
-//InitCommonArticleController 初始化公共的分类控制器
-func InitCommonCategoryController() *common.CategoryController {
+//InitFrontArticleController 初始化前台的分类控制器
+func InitFrontCategoryController() *front.CategoryController {
 	categoryDAO := dao.NewCategoryDAO()
 	categoryService := service.NewCategoryService(categoryDAO)
-	categoryController := common.NewCategoryController(categoryService)
+	categoryController := front.NewCategoryController(categoryService)
 	return categoryController
 }
 
-//InitCommonTagController 初始化公共的标签控制器
-func InitCommonTagController() *common.TagController {
+//InitFrontTagController 初始化前台的标签控制器
+func InitFrontTagController() *front.TagController {
 	tagDAO := dao.NewTagDAO()
 	tagService := service.NewTagService(tagDAO)
-	tagController := common.NewTagController(tagService)
+	tagController := front.NewTagController(tagService)
 	return tagController
 }
 
-//InitCommonUserController 初始化公共的用户控制器
-func InitCommonUserController() *common.UserController {
+//InitFrontUserController 初始化前台的用户控制器
+func InitFrontUserController() *front.UserController {
 	userDAO := dao.NewUserDAO()
 	userService := service.NewUserService(userDAO)
-	userController := common.NewUserController(userService)
+	userController := front.NewUserController(userService)
 	return userController
 }

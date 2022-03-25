@@ -6,7 +6,7 @@ package inject
 import (
 	"github.com/google/wire"
 	"server/controller/backstage"
-	"server/controller/common"
+	"server/controller/front"
 	"server/dao"
 	"server/service"
 )
@@ -38,29 +38,29 @@ func InitBackstageUserController() *backstage.UserController {
 	return nil
 }
 
-//公共控制器
+//前台控制器
 //------------------------------------------------------------------------------------------
 
-//InitCommonArticleController 初始化公共的文章控制器
-func InitCommonArticleController() *common.ArticleController {
-	wire.Build(dao.NewArticleDAO, service.NewArticleService, common.NewArticleController)
+//InitFrontArticleController 初始化前台的文章控制器
+func InitFrontArticleController() *front.ArticleController {
+	wire.Build(dao.NewArticleDAO, service.NewArticleService, front.NewArticleController)
 	return nil
 }
 
-//InitCommonArticleController 初始化公共的分类控制器
-func InitCommonCategoryController() *common.CategoryController {
-	wire.Build(dao.NewCategoryDAO, service.NewCategoryService, common.NewCategoryController)
+//InitFrontArticleController 初始化前台的分类控制器
+func InitFrontCategoryController() *front.CategoryController {
+	wire.Build(dao.NewCategoryDAO, service.NewCategoryService, front.NewCategoryController)
 	return nil
 }
 
-//InitCommonTagController 初始化公共的标签控制器
-func InitCommonTagController() *common.TagController {
-	wire.Build(dao.NewTagDAO, service.NewTagService, common.NewTagController)
+//InitFrontTagController 初始化前台的标签控制器
+func InitFrontTagController() *front.TagController {
+	wire.Build(dao.NewTagDAO, service.NewTagService, front.NewTagController)
 	return nil
 }
 
-//InitCommonUserController 初始化公共的用户控制器
-func InitCommonUserController() *common.UserController {
-	wire.Build(dao.NewUserDAO, service.NewUserService, common.NewUserController)
+//InitFrontUserController 初始化前台的用户控制器
+func InitFrontUserController() *front.UserController {
+	wire.Build(dao.NewUserDAO, service.NewUserService, front.NewUserController)
 	return nil
 }

@@ -14,8 +14,8 @@ type UserChangePasswordDTO struct {
 	NewPassword string `json:"newPassword"`
 }
 
-//UserRetrievePassword 用户找回密码
-type UserRetrievePassword struct {
+//UserRetrievePasswordDTO 用户找回密码
+type UserRetrievePasswordDTO struct {
 	Email       string `json:"email"`
 	Code        string `json:"code"`
 	NewPassword string `json:"newPassword"`

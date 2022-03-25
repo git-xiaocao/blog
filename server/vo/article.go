@@ -7,9 +7,7 @@ type ArticleResult struct {
 }
 
 func (r *ArticleResult) DataOk(data *model.Article) {
-	var temp interface{}
-	temp = data
-	r.Data = temp
+	r.Data = data
 }
 
 type ArticleListResult struct {
@@ -17,7 +15,5 @@ type ArticleListResult struct {
 }
 
 func (r *ArticleListResult) DataOk(data *[]*model.Article) {
-	var temp interface{}
-	temp = data
-	r.Data = temp
+	r.Data = data
 }

@@ -52,8 +52,8 @@ func (a *ArticleController) GetList(ctx iris.Context) (result vo.ArticleListResu
 	}
 
 	//大于0小于30
-	if !(*query.Limit > 0 && *query.Limit < 30) {
-		result.Err(nil, "参数范围 0 < limit > 30")
+	if !(*query.Limit >= 0 && *query.Limit <= 30) {
+		result.Err(nil, "参数范围 0 <= limit >= 30")
 		return
 	}
 

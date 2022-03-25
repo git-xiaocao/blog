@@ -7,7 +7,5 @@ type TagListResult struct {
 }
 
 func (r *TagListResult) DataOk(data *[]*model.Tag) {
-	var temp interface{}
-	temp = data
-	r.Data = temp
+	r.Data = data
 }

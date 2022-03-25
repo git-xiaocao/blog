@@ -7,7 +7,5 @@ type CategoryListResult struct {
 }
 
 func (r *CategoryListResult) DataOk(data *[]*model.Category) {
-	var temp interface{}
-	temp = data
-	r.Data = temp
+	r.Data = data
 }
