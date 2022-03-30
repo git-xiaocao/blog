@@ -7,11 +7,12 @@ import (
 
 type ArticleDAO struct{}
 
-func (*ArticleDAO) QueryList(offset, limit int) (result []*model.Article, err error) {
+func (*ArticleDAO) QueryPage(offset, limit int) (result []*model.Article, count int64, err error) {
 
 	err = db.Model(&model.Article{}).
 		Preload("Category").Preload("Tags").
 		Offset(offset).Limit(limit).
+		Count(&count).
 		Find(&result).Error
 
 	return
@@ -31,10 +32,10 @@ func (*ArticleDAO) QueryByPathMark(pathMark string) (result model.Article, err e
 	return
 }
 
-func (*ArticleDAO) QueryListByTagIds(tagIds []int64, offset, limit int) (result []*model.Article, err error) {
+func (*ArticleDAO) QueryPageByTagIds(tagIds []int64, offset, limit int) (result []*model.Article, count int64, err error) {
 
-	articleIds := make([]int, 0)
 	err = db.Transaction(func(tx *gorm.DB) error {
+		articleIds := make([]int, 0)
 		//先把文章id查出来
 		err := tx.Raw("SELECT article_id FROM article_tag WHERE tag_id IN ?", tagIds).Scan(&articleIds).Error
 		if err != nil {
@@ -45,6 +46,7 @@ func (*ArticleDAO) QueryListByTagIds(tagIds []int64, offset, limit int) (result 
 			Preload("Category").Preload("Tags").
 			Where("id IN ?", articleIds).
 			Offset(offset).Limit(limit).
+			Count(&count).
 			Find(&result).Error
 		return err
 	})

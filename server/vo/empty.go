@@ -1,7 +1,7 @@
 package vo
 
 type EmptyResult struct {
-	Result[*any]
+	Result
 }
 
 func (r *EmptyResult) Ok() {

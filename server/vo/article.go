@@ -3,7 +3,7 @@ package vo
 import "server/model"
 
 type ArticleResult struct {
-	Result[*model.Article]
+	Result
 }
 
 func (r *ArticleResult) DataOk(data *model.Article) {
@@ -11,9 +11,17 @@ func (r *ArticleResult) DataOk(data *model.Article) {
 }
 
 type ArticleListResult struct {
-	Result[*[]*model.Article]
+	Result
 }
 
 func (r *ArticleListResult) DataOk(data *[]*model.Article) {
+	r.Data = data
+}
+
+type ArticlePageResult struct {
+	PageResult[*[]*model.Article]
+}
+
+func (r *ArticlePageResult) DataOk(data *PageData[[]*model.Article]) {
 	r.Data = data
 }

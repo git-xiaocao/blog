@@ -3,7 +3,7 @@ package vo
 import "server/model"
 
 type CategoryListResult struct {
-	Result[*[]*model.Category]
+	Result
 }
 
 func (r *CategoryListResult) DataOk(data *[]*model.Category) {

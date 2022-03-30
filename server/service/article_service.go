@@ -5,6 +5,7 @@ import (
 	"server/dao"
 	"server/dto"
 	"server/model"
+	"server/vo"
 )
 
 type ArticleService struct {
@@ -100,10 +101,24 @@ func (a *ArticleService) Exist(pathMark string) (result bool) {
 
 func (a *ArticleService) List(tagIds []int64, offset, limit int) (result []*model.Article, err error) {
 	if len(tagIds) == 0 {
-		result, err = a.dao.QueryList(offset, limit)
+		result, _, err = a.dao.QueryPage(offset, limit)
 	} else {
-		result, err = a.dao.QueryListByTagIds(tagIds, offset, limit)
+		result, _, err = a.dao.QueryPageByTagIds(tagIds, offset, limit)
 	}
+	return
+}
+
+func (a *ArticleService) Page(tagIds []int64, pageCurrent, pageSize int) (result vo.PageData[[]*model.Article], err error) {
+	offset := (pageCurrent - 1) * pageSize
+	limit := pageSize
+	var count int64
+	var list []*model.Article
+	if len(tagIds) == 0 {
+		list, count, err = a.dao.QueryPage(offset, limit)
+	} else {
+		list, count, err = a.dao.QueryPageByTagIds(tagIds, offset, limit)
+	}
+	result.Init(list, pageCurrent, pageSize, count)
 	return
 }
 

@@ -28,11 +28,10 @@ func (a *ArticleController) GetBy(pathMark string) (result vo.ArticleResult, cod
 	return
 }
 
-//GetList /article/list
-func (a *ArticleController) GetList(ctx iris.Context) (result vo.ArticleListResult) {
+//GetPage /article/page
+func (a *ArticleController) GetPage(ctx iris.Context) (result vo.ArticlePageResult) {
 	var query struct {
-		Offset *int    `url:"offset"`
-		Limit  *int    `url:"limit"`
+		dto.PageListQuery
 		TagIds []int64 `url:"tag-ids"`
 	}
 	err := ctx.ReadQuery(&query)
@@ -41,23 +40,12 @@ func (a *ArticleController) GetList(ctx iris.Context) (result vo.ArticleListResu
 		return
 	}
 
-	if query.Offset == nil {
-		result.QueryParamLack("offset")
+	if ok, message := query.Check(); !ok {
+		result.Err(nil, message)
 		return
 	}
 
-	if query.Limit == nil {
-		result.QueryParamLack("limit")
-		return
-	}
-
-	//大于0小于30
-	if !(*query.Limit >= 0 && *query.Limit <= 30) {
-		result.Err(nil, "参数范围 0 <= limit >= 30")
-		return
-	}
-
-	data, err := a.service.List(query.TagIds, *query.Offset, *query.Limit)
+	data, err := a.service.Page(query.TagIds, *query.PageCurrent, *query.PageSize)
 
 	result.DataOk(&data)
 	return
