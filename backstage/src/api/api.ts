@@ -29,10 +29,18 @@ namespace API {
             return axiosInstance.get<ArticleResult>(`/article/${pathMark}`).then(res => res.data);
         }
 
-        public static GetList = (offset: number, limit: number, tagIds: Array<number> | null): Promise<ArticleListResult> => {
-            return axiosInstance.get<ArticleListResult>("/article/list", {
+        /**
+         * 获取文章分页
+         * @param pageCurrent 当前页
+         * @param pageSize 每页显示数量最大30
+         * @param tagIds 标签id数组
+         * */
+        public static GetPage = (pageCurrent: number, pageSize: number, tagIds: Array<number> | null): Promise<ArticleListResult> => {
+            return axiosInstance.get<ArticleListResult>("/article/page", {
                 params: {
-                    offset, limit, tagIds,
+                    "page-current": pageCurrent,
+                    "page-size": pageSize,
+                    "tag-ids": tagIds,
                 }
             }).then(res => res.data);
         }
